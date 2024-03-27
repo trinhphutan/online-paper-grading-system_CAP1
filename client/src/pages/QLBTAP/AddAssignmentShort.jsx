@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IoDuplicateOutline } from 'react-icons/io5';
 import '~~/pages/assignment/AddAssignmentShort.scss';
 import axios from 'axios';
+import moment from 'moment';
 import { useSelector } from 'react-redux';
 
 export default function AddAssignmentShort() {
@@ -11,6 +12,8 @@ export default function AddAssignmentShort() {
   const [classList, setClassList] = useState([]);
   const [values, setValues] = useState({
     of_class: '',
+    start_date: moment().format('YYYY-MM-DDTHH:mm'),
+    deadline: moment().add(2, 'days').format('YYYY-MM-DDTHH:mm'),
   });
 
   const [newItems, setNewItems] = useState([]);
@@ -21,7 +24,9 @@ export default function AddAssignmentShort() {
       grade: 0
     }
   ]);
-
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+};
   const handleAddItem = () => {
     const newItem = {
       id: Date.now(),
@@ -79,6 +84,8 @@ export default function AddAssignmentShort() {
           description: inputValueDescription,
           question_name: JSON.stringify(jsonQuestions),
           of_class: values.of_class,
+          start_date:values.start_date,
+          deadline:values.deadline
         },
       });
 
@@ -157,13 +164,86 @@ export default function AddAssignmentShort() {
         </button>
       </div>
       <div className="header-short-assignment">
-        <h1 className="h3 mb-2 text-gray-800">Thêm bài tập ngắn</h1>
-        <label htmlFor="import" className="btn btn-warning ml-5 mt-2">
-          <i className="fa-solid fa-file-import"></i>
-        </label>
-        <input type="file" id="import" hidden />
-        <button className="btn btn-primary" onClick={handleSaveQuestion}>Lưu</button>
+        <h1 className="h3 mt-2  text-gray-800">Thêm bài tập ngắn</h1>
+        <div className='button-import-save'>
+          <label htmlFor="import" className="btn btn-warning ml-5 mt-2" style={{width:"100px",marginRight:"10px"}}>
+            <i className="fa-solid fa-file-import"></i>Import
+          </label>
+          <input type="file" id="import"  hidden />
+          <button className="btn btn-primary" style={{width:"100px"}} onClick={handleSaveQuestion}>Lưu</button>
+
+        </div>
       </div>
+      <div className='select-class-deadline' style={{width:"60%" , display:"flex",marginTop:"20px"}}>
+        <form style={{width:"100%" ,display:"flex",gap:"20px"}}>
+          <div className='form-group' style={{width:"20%"}}>
+            <label htmlFor="name-bt" className="text-capitalize font-weight-bold pl-2">
+                        Lớp
+            </label>
+            <select
+              className="custom-select"
+              style={{ height: 50,}}
+              id="validationTooltip04"
+              required
+              value={values.of_class}
+              onChange={(e) => {
+                setError((prev) => ({ ...prev, errClass: null }));
+                setValues((prev) => ({ ...prev, of_class: e.target.value }));
+              }}
+            >
+              <option value="">Chọn lớp</option>
+              {classList.map((classItem, index) => (
+                <option key={index} value={classItem.class_name}>
+                  {classItem.class_name}
+                </option>
+              ))}
+            </select>
+          
+            {error?.errClass && <small className="text-danger ">{error?.errClass}</small>}
+          </div>
+          <div className="form-group row" style={{width:"80%"}}>
+                    <div className="col-sm-6 mb-3 mb-sm-0">
+                        <label htmlFor="from" className="text-capitalize font-weight-bold pl-2">
+                            Từ
+                        </label>
+                        <input
+                            type="datetime-local"
+                            style={{ height: 50,}}
+                            className="form-control form-control-user"
+                            id="from"
+                            name="start_date"
+                            value={values.start_date}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="col-sm-6">
+                        <label htmlFor="to" className="text-capitalize font-weight-bold pl-3">
+                            Đến
+                        </label>
+                        <input
+                            type="datetime-local"
+                            style={{ height: 50,}}
+                            className="form-control form-control-user"
+                            id="to"
+                            name="deadline"
+                            value={values.deadline}
+                            onChange={(e) => {
+                                setError((prev) => ({
+                                    ...prev,
+                                    errFinish: null,
+                                }));
+                                handleChange(e);
+                            }} //
+                        />
+                    </div>
+                    {error?.errFinish !== null && <small className="text-danger ml-3">{error?.errFinish}</small>}
+                </div>
+        </form>
+        
+
+      </div>
+        
       <div className="title-container shadow-sm">
         <div className="line"></div>
         <textarea
@@ -179,25 +259,7 @@ export default function AddAssignmentShort() {
           onChange={handleDescriptionChange}
           className="description-text"
         />
-        <select
-          className="custom-select"
-          style={{ height: 50, borderRadius: 100 }}
-          id="validationTooltip04"
-          required
-          value={values.of_class}
-          onChange={(e) => {
-            setError((prev) => ({ ...prev, errClass: null }));
-            setValues((prev) => ({ ...prev, of_class: e.target.value }));
-          }}
-        >
-          <option value="">Chọn lớp</option>
-          {classList.map((classItem, index) => (
-            <option key={index} value={classItem.class_name}>
-              {classItem.class_name}
-            </option>
-          ))}
-        </select>
-        {error?.errClass && <small className="text-danger ml-3">{error?.errClass}</small>}
+        
       </div>
 
       {items.map(item => (
