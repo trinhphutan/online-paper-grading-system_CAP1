@@ -79,10 +79,25 @@ export const createAssignment = (body, fileData, tid) =>
   new Promise(async (resolve, reject) => {
     // console.log(fileData);
     try {
+
+      
       if (fileData) {
         body.file_path = fileData?.path;
         body.filename = fileData?.filename;
       }
+      // let assignmentType = ""; // Biến để lưu loại assignment
+
+      // // Kiểm tra loại assignment dựa trên dữ liệu gửi từ client
+      // if (body.question_name=== "") { // Tự luận
+      //     assignmentType = "0";
+      //     // Nếu là tự luận, lưu nội dung hoặc file vào cơ sở dữ liệu
+      // } else if (body.content_text ===""|| body.file_path === "") { // Câu hỏi ngắn
+      //     assignmentType = "1";
+      //     // Nếu là câu hỏi ngắn, lưu câu hỏi vào cơ sở dữ liệu
+      // } else {
+      //     reject("Invalid assignment type.");
+      //     return;
+      // }
       const dataClass = await db.Class.findOne({
         where: { class_name: body.of_class },
       });
@@ -93,6 +108,7 @@ export const createAssignment = (body, fileData, tid) =>
           ...body,
           id_teacher: tid,
           of_class: dataClass.dataValues.id,
+          
         },
       });
       if (fileData && !response[0] === 0)

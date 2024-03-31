@@ -46,8 +46,8 @@ module.exports = {
         type: Sequelize.STRING,
       },
       type_assignment: {
-        type: Sequelize.ENUM,
-        values: ['0' , '1']
+        type: Sequelize.STRING,
+        
         
       },
       createdAt: {

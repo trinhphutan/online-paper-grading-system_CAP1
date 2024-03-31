@@ -85,7 +85,8 @@ export default function AddAssignmentShort() {
           question_name: JSON.stringify(jsonQuestions),
           of_class: values.of_class,
           start_date:values.start_date,
-          deadline:values.deadline
+          deadline:values.deadline,
+          type_assignment: 'Câu hỏi ngắn'
         },
       });
 

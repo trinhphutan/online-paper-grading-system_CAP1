@@ -42,6 +42,7 @@ export default function AddAssignmentEssay() {
         deadline: moment().add(2, 'days').format('YYYY-MM-DDTHH:mm'),
         content_text: '',
         file_path: '',
+        type_assignment:'Tự luận'
     });
 
     const [error, setError] = useState({
@@ -70,6 +71,7 @@ export default function AddAssignmentEssay() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
+        
 
         if (values.assignment_name === '' || values.assignment_name.length < 0) {
             return setError((prev) => ({
@@ -104,6 +106,7 @@ export default function AddAssignmentEssay() {
                 authorization: token,
             },
             data: formData,
+            
         })
             .then((res) => {
                 console.log(res);
